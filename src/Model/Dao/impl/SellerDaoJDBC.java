@@ -15,7 +15,7 @@ import Model.entities.Seller;
 public class SellerDaoJDBC implements SellerDao {
 
 	private Connection conn;
-	
+
 	public SellerDaoJDBC(Connection conn) {
 		this.conn = conn;
 	}
@@ -40,29 +40,26 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public Seller findById(Integer id) {
-        PreparedStatement st = null;
+		PreparedStatement st = null;
 		ResultSet rs = null;
-		
+
 		try {
 			st = conn.prepareStatement(
-					"SELECT seller.*,department.Name as DepName "
-					+ "FROM seller INNER JOIN department "
-					+ "ON seller.DepartmentId = department.Id "
-					+ "WHERE seller.Id = ?");
-		st.setInt(1, id);
-		rs = st.executeQuery();
-		
-		if(rs.next()) {
-			Department dep = instaciateDepartment(rs);
-			Seller obj = instaciateSeller(rs, dep);
-			return obj;
-				
-		}
-		return null;
-		}catch(SQLException e) {
+					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
+							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?");
+			st.setInt(1, id);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				Department dep = instaciateDepartment(rs);
+				Seller obj = instaciateSeller(rs, dep);
+				return obj;
+
+			}
+			return null;
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
